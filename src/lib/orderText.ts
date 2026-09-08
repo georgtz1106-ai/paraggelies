@@ -2,6 +2,7 @@ export interface OrderItemView {
   supplier_id: string;
   supplier_name: string;
   supplier_phone: string | null;
+  product_id: string | null;
   product_name_snapshot: string;
   unit: string;
   quantity: number;

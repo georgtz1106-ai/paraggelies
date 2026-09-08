@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRestaurant } from "../hooks/useRestaurant";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useProducts } from "../hooks/useProducts";
@@ -8,19 +8,42 @@ import type { OrderItemView } from "../lib/orderText";
 import { OrderExportView } from "../components/OrderExportView";
 import { Button } from "../components/Button";
 
+interface PrefillItem {
+  product_id: string | null;
+  quantity: number;
+}
+
 export function NewOrder() {
   const { restaurant } = useRestaurant();
   const { suppliers, loading: suppliersLoading } = useSuppliers(restaurant?.id);
   const { products, loading: productsLoading } = useProducts(restaurant?.id);
   const { createOrder } = useOrders();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const [quantities, setQuantities] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [created, setCreated] = useState<{ createdAt: string; items: OrderItemView[] } | null>(null);
+  const prefillApplied = useRef(false);
 
   const loading = suppliersLoading || productsLoading;
   const suppliersWithProducts = suppliers.filter((s) => products.some((p) => p.supplier_id === s.id));
+
+  useEffect(() => {
+    const prefill = (location.state as { prefill?: PrefillItem[] } | null)?.prefill;
+    if (!prefill || loading || prefillApplied.current) return;
+    prefillApplied.current = true;
+
+    const next: Record<string, string> = {};
+    for (const item of prefill) {
+      if (item.product_id && products.some((p) => p.id === item.product_id)) {
+        next[item.product_id] = String(item.quantity);
+      }
+    }
+    setQuantities(next);
+    navigate(location.pathname, { replace: true });
+  }, [location, loading, products, navigate]);
 
   function reset() {
     setCreated(null);
@@ -64,6 +87,7 @@ export function NewOrder() {
         supplier_id: item.supplier_id,
         supplier_name: supplier?.name ?? "",
         supplier_phone: supplier?.contact_phone ?? null,
+        product_id: item.product_id,
         product_name_snapshot: item.product_name_snapshot,
         unit: item.unit,
         quantity: item.quantity,
@@ -74,7 +98,14 @@ export function NewOrder() {
   }
 
   if (created) {
-    return <OrderExportView createdAt={created.createdAt} items={created.items} onReset={reset} />;
+    return (
+      <OrderExportView
+        title="Η παραγγελία δημιουργήθηκε"
+        createdAt={created.createdAt}
+        items={created.items}
+        primaryAction={{ label: "Νέα Παραγγελία", onClick: reset }}
+      />
+    );
   }
 
   if (!loading && suppliersWithProducts.length === 0) {

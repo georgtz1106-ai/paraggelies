@@ -3,12 +3,13 @@ import { buildSupplierText, formatDateGreek, groupItemsBySupplier, toWhatsAppLin
 import { Button } from "./Button";
 
 interface OrderExportViewProps {
+  title: string;
   createdAt: string;
   items: OrderItemView[];
-  onReset: () => void;
+  primaryAction: { label: string; onClick: () => void };
 }
 
-export function OrderExportView({ createdAt, items, onReset }: OrderExportViewProps) {
+export function OrderExportView({ title, createdAt, items, primaryAction }: OrderExportViewProps) {
   const groups = groupItemsBySupplier(items);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -22,14 +23,14 @@ export function OrderExportView({ createdAt, items, onReset }: OrderExportViewPr
     <div>
       <div className="flex items-center justify-between mb-6 print:hidden">
         <div>
-          <h1 className="text-xl font-semibold text-gray-900">Η παραγγελία δημιουργήθηκε</h1>
+          <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
           <p className="text-sm text-gray-500">{formatDateGreek(createdAt)}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={() => window.print()}>
             Εκτύπωση / PDF
           </Button>
-          <Button onClick={onReset}>Νέα Παραγγελία</Button>
+          <Button onClick={primaryAction.onClick}>{primaryAction.label}</Button>
         </div>
       </div>
 
