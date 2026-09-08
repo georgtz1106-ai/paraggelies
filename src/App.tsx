@@ -6,6 +6,7 @@ import { ComingSoon } from "./components/ComingSoon";
 import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import { Suppliers } from "./pages/Suppliers";
+import { Products } from "./pages/Products";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
             <Route element={<Layout />}>
               <Route index element={<Navigate to="/suppliers" replace />} />
               <Route path="/suppliers" element={<Suppliers />} />
-              <Route path="/products" element={<ComingSoon title="Προϊόντα" />} />
+              <Route path="/products" element={<Products />} />
               <Route path="/orders/new" element={<ComingSoon title="Νέα Παραγγελία" />} />
               <Route path="/orders" element={<ComingSoon title="Ιστορικό Παραγγελιών" />} />
             </Route>
