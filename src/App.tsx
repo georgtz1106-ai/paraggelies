@@ -7,6 +7,7 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import { Suppliers } from "./pages/Suppliers";
 import { Products } from "./pages/Products";
+import { NewOrder } from "./pages/NewOrder";
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
               <Route index element={<Navigate to="/suppliers" replace />} />
               <Route path="/suppliers" element={<Suppliers />} />
               <Route path="/products" element={<Products />} />
-              <Route path="/orders/new" element={<ComingSoon title="Νέα Παραγγελία" />} />
+              <Route path="/orders/new" element={<NewOrder />} />
               <Route path="/orders" element={<ComingSoon title="Ιστορικό Παραγγελιών" />} />
             </Route>
           </Route>

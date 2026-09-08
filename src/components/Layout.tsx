@@ -13,7 +13,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
+      <header className="bg-white border-b border-gray-200 print:hidden">
         <div className="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
           <span className="font-semibold text-gray-900">Παραγγελίες</span>
           <nav className="flex gap-1">
@@ -21,6 +21,7 @@ export function Layout() {
               <NavLink
                 key={item.to}
                 to={item.to}
+                end
                 className={({ isActive }) =>
                   `px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     isActive ? "bg-emerald-50 text-emerald-700" : "text-gray-600 hover:bg-gray-100"
